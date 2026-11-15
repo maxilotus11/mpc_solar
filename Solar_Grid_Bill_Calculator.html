@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Solar & Grid Bill Calculator — Dhaka Residential</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-alt: #263349;
+      --border: #334155;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --grid-color: #f43f5e;
+      --single-color: #10b981;
+      --double-color: #8b5cf6;
+      --amber: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1260px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 22px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    header h1 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 2px;
+    }
+
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+
+    .btn-preset {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 13px;
+      font-size: 0.82rem;
+    }
+
+    .btn-preset:hover {
+      border-color: var(--accent);
+      background: var(--surface-alt);
+    }
+
+    .btn-preset.active {
+      background: rgba(56, 189, 248, 0.16);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Package Comparison Cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .pkg-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      position: relative;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .pkg-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .pkg-card.grid-card { border-top: 4px solid var(--grid-color); }
+    .pkg-card.single-card { border-top: 4px solid var(--single-color); }
+    .pkg-card.double-card { border-top: 4px solid var(--double-color); }
+
+    .pkg-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 3px 9px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
+    .grid-card .pkg-badge { background: rgba(244, 63, 94, 0.18); color: #fda4af; }
+    .single-card .pkg-badge { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; }
+    .double-card .pkg-badge { background: rgba(139, 92, 246, 0.18); color: #c4b5fd; }
+
+    .pkg-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .pkg-sub {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .bill-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .bill-amount {
+      font-size: 1.75rem;
+      font-weight: 800;
+    }
+
+    .grid-card .bill-amount { color: #fb7185; }
+    .single-card .bill-amount { color: #34d399; }
+    .double-card .bill-amount { color: #a78bfa; }
+
+    .savings-pill {
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #6ee7b7;
+    }
+
+    .stat-list {
+      list-style: none;
+      font-size: 0.85rem;
+      display: grid;
+      gap: 6px;
+    }
+
+    .stat-list li {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+    }
+
+    .stat-list li strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Visual Graphics Section */
+    .visuals-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .visuals-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .panel h2 {
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel .panel-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    /* Custom CSS Color Bar Chart */
+    .chart-group {
+      margin-bottom: 16px;
+    }
+
+    .chart-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 26px;
+      background: #0f172a;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      border: 1px solid var(--border);
+    }
+
+    .bar-fill {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #fff;
+      transition: width 0.35s ease;
+      white-space: nowrap;
+    }
+
+    .bar-bill-grid { background: linear-gradient(90deg, #e11d48, #fb7185); }
+    .bar-bill-single { background: linear-gradient(90deg, #059669, #34d399); }
+    .bar-save-single { background: rgba(52, 211, 153, 0.22); color: #6ee7b7; }
+    .bar-bill-double { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+    .bar-save-double { background: rgba(167, 139, 250, 0.22); color: #ddd6fe; }
+
+    .legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .legend-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      margin-right: 5px;
+    }
+
+    /* Energy Flow & Battery Meter */
+    .energy-box {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .energy-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.84rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .meter-track {
+      height: 14px;
+      background: #1e293b;
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .meter-seg {
+      height: 100%;
+      transition: width 0.35s ease;
+    }
+
+    .slab-breakdown {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: grid;
+      gap: 4px;
+    }
+
+    /* Appliance Editor Table */
+    .table-header-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .summary-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .pill {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+    }
+
+    .pill strong {
+      color: var(--accent);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 10px 8px;
+      background: #0f172a;
+      color: var(--muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 9px 8px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr.disabled-row {
+      opacity: 0.45;
+    }
+
+    input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--single-color);
+      cursor: pointer;
+    }
+
+    input[type="number"], input[type="text"], select {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 6px;
+      padding: 5px 7px;
+      font-size: 0.84rem;
+      font-family: inherit;
+    }
+
+    input[type="number"] {
+      width: 68px;
+      text-align: center;
+    }
+
+    input[type="number"]:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .qty-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-step {
+      background: var(--surface-alt);
+      color: var(--text);
+      width: 24px;
+      height: 24px;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-step:hover {
+      background: var(--accent);
+      color: #0f172a;
+    }
+
+    .btn-del {
+      background: rgba(244, 63, 94, 0.15);
+      color: #fda4af;
+      padding: 5px 9px;
+      font-size: 0.78rem;
+    }
+
+    .btn-del:hover {
+      background: #e11d48;
+      color: #fff;
+    }
+
+    /* Add Device Form */
+    .add-device-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: flex-end;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field-group label {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .btn-add {
+      background: var(--single-color);
+      color: #06281e;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .btn-add:hover {
+      background: #34d399;
+    }
+
+    .btn-reset {
+      background: var(--surface-alt);
+      color: var(--muted);
+      padding: 8px 14px;
+      font-size: 0.82rem;
+    }
+
+    .btn-reset:hover {
+      color: #fff;
+    }
+
+    .tariff-note {
+      margin-top: 18px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      background: #0f172a;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Interactive Solar &amp; Grid Bill Calculator</h1>
+        <p>Compare Grid Only vs. Single Battery &amp; Double Battery Solar Packages (Dhaka BERC Residential Tariff)</p>
+      </div>
+      <div class="presets">
+        <button class="btn-preset active" id="preset-default" onclick="applyPreset('default')">Your 13h AC Split Schedule</button>
+        <button class="btn-preset" id="preset-saver" onclick="applyPreset('saver')">5h Night AC Saver</button>
+        <button class="btn-preset" id="preset-heavy" onclick="applyPreset('heavy')">16h Heavy AC Schedule</button>
+      </div>
+    </header>
+
+    <!-- 3 Package Summary Cards -->
+    <section class="cards-grid">
+      <!-- Grid Only -->
+      <div class="pkg-card grid-card">
+        <span class="pkg-badge">Baseline — No Solar</span>
+        <div class="pkg-title">Grid Electricity Only</div>
+        <div class="pkg-sub">100% Utility Power (DESCO / DPDC)</div>
+        <div class="bill-row">
+          <div>
+            <div style="font-size:0.75rem;color:var(--muted);">Monthly Grid Bill</div>
+            <div class="bill-amount" id="card-grid-bill">৳0</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.75rem;color:var(--muted);">Monthly Savings</div>
+            <div style="font-weight:700;color:#fda4af;">৳0 / mo</div>
+          </div>
+        </div>
+        <ul class="stat-list">
+          <li><span>Grid Units Bought:</span> <strong id="card-grid-units">0 kWh</strong></li>
+          <li><span>Top Tariff Slab Reached:</span> <strong id="card-grid-slab">-</strong></li>
+          <li><span>Blackout Backup:</span> <strong>None (0 hrs)</strong></li>
+          <li><span>Upfront Hardware Cost:</span> <strong>৳0</strong></li>
+        </ul>
+      </div>
+
+      <!-- Single Battery -->
+      <div class="pkg-card single-card">
+        <span class="pkg-badge">Best ROI &amp; Fastest Payback</span>
+        <div class="pkg-title">Package 1: Single Battery</div>
+        <div class="pkg-sub">3.6 kW Panels + 5 kW Inverter + 1× 48V 100Ah (5.12 kWh)</div>
+        <div class="bill-row">
+          <div>
+            <div style="font-size:0.75rem;color:var(--muted);">New Monthly Bill</div>
+            <div class="bill-amount" id="card-single-bill">৳0</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.75rem;color:var(--muted);">Monthly Savings</div>
+            <div class="savings-pill" id="card-single-save">Save ৳0</div>
+          </div>
+        </div>
+        <ul class="stat-list">
+          <li><span>Grid Units Bought:</span> <strong id="card-single-units">0 kWh</strong></li>
+          <li><span>Top Tariff Slab Reached:</span> <strong id="card-single-slab">-</strong></li>
+          <li><span>Night Battery Usable (to 20%):</span> <strong>4.10 kWh (~2.5h AC)</strong></li>
+          <li><span>Est. Package Cost / Payback:</span> <strong id="card-single-payback">~৳2.50L / -</strong></li>
+        </ul>
+      </div>
+
+      <!-- Double Battery -->
+      <div class="pkg-card double-card">
+        <span class="pkg-badge">Maximum Independence</span>
+        <div class="pkg-title">Package 2: Double Battery</div>
+        <div class="pkg-sub">4.2 kW Panels + 5 kW Inverter + 2× 48V 100Ah (10.24 kWh)</div>
+        <div class="bill-row">
+          <div>
+            <div style="font-size:0.75rem;color:var(--muted);">New Monthly Bill</div>
+            <div class="bill-amount" id="card-double-bill">৳0</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.75rem;color:var(--muted);">Monthly Savings</div>
+            <div class="savings-pill" id="card-double-save" style="background:rgba(139,92,246,0.2);color:#ddd6fe;">Save ৳0</div>
+          </div>
+        </div>
+        <ul class="stat-list">
+          <li><span>Grid Units Bought:</span> <strong id="card-double-units">0 kWh</strong></li>
+          <li><span>Top Tariff Slab Reached:</span> <strong id="card-double-slab">-</strong></li>
+          <li><span>Night Battery Usable (to 20%):</span> <strong>8.20 kWh (~5.5h AC)</strong></li>
+          <li><span>Est. Package Cost / Payback:</span> <strong id="card-double-payback">~৳3.45L / -</strong></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Visual Color Charts & Energy Flow -->
+    <section class="visuals-grid">
+      <div class="panel">
+        <h2>Monthly Bill vs. Savings Visual Comparison</h2>
+        <p class="panel-desc">Colored bars show how much of your baseline bill is eliminated by each solar battery package</p>
+
+        <div class="chart-group">
+          <div class="chart-label-row">
+            <span>Grid Electricity Only</span>
+            <span id="bar-txt-grid" style="color:#fda4af;">৳0 bill</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill bar-bill-grid" id="bar-fill-grid" style="width:100%;">100% Grid Paid</div>
+          </div>
+        </div>
+
+        <div class="chart-group">
+          <div class="chart-label-row">
+            <span>Package 1: Single Battery (5.12 kWh)</span>
+            <span id="bar-txt-single" style="color:#6ee7b7;">৳0 bill | Save ৳0</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill bar-bill-single" id="bar-fill-single-bill" style="width:30%;">Bill</div>
+            <div class="bar-fill bar-save-single" id="bar-fill-single-save" style="width:70%;">Saved</div>
+          </div>
+        </div>
+
+        <div class="chart-group">
+          <div class="chart-label-row">
+            <span>Package 2: Double Battery (10.24 kWh)</span>
+            <span id="bar-txt-double" style="color:#c4b5fd;">৳0 bill | Save ৳0</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill bar-bill-double" id="bar-fill-double-bill" style="width:15%;">Bill</div>
+            <div class="bar-fill bar-save-double" id="bar-fill-double-save" style="width:85%;">Saved</div>
+          </div>
+        </div>
+
+        <div class="legend-row">
+          <span><i class="legend-dot" style="background:#fb7185;"></i>Grid Only Bill</span>
+          <span><i class="legend-dot" style="background:#34d399;"></i>Single Battery Remaining Bill</span>
+          <span><i class="legend-dot" style="background:rgba(52,211,153,0.35);"></i>Single Battery Saved</span>
+          <span><i class="legend-dot" style="background:#a78bfa;"></i>Double Battery Remaining Bill</span>
+          <span><i class="legend-dot" style="background:rgba(167,139,250,0.35);"></i>Double Battery Saved</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Daily Energy &amp; Battery Charge Balance</h2>
+        <p class="panel-desc">How your daytime solar generation powers loads and charges batteries for night use</p>
+
+        <div class="energy-box">
+          <div class="energy-header">
+            <span>Daily Load Split (Day vs. Night)</span>
+            <span id="daily-total-kwh" style="color:var(--accent);">0.00 kWh / day</span>
+          </div>
+          <div class="meter-track">
+            <div class="meter-seg" id="meter-day" style="background:#f59e0b;width:50%;" title="Daytime Load"></div>
+            <div class="meter-seg" id="meter-night" style="background:#38bdf8;width:50%;" title="Nighttime Load"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--muted);margin-top:6px;">
+            <span id="lbl-day-kwh" style="color:#fbbf24;">Daytime: 0 kWh</span>
+            <span id="lbl-night-kwh" style="color:#7dd3fc;">Nighttime: 0 kWh</span>
+          </div>
+        </div>
+
+        <div class="energy-box">
+          <div class="energy-header">
+            <span>Single Battery Daily Solar Charge</span>
+            <span id="single-batt-status" style="color:#6ee7b7;">100% Charged</span>
+          </div>
+          <div class="meter-track">
+            <div class="meter-seg" id="meter-single-batt" style="background:#10b981;width:100%;"></div>
+          </div>
+          <div style="font-size:0.76rem;color:var(--muted);margin-top:5px;" id="single-batt-note">
+            3.6 kW solar (~13.5 kWh/day) powers daytime load first, then charges battery.
+          </div>
+        </div>
+
+        <div class="energy-box" style="margin-bottom:0;">
+          <div class="energy-header">
+            <span>Double Battery Daily Solar Charge</span>
+            <span id="double-batt-status" style="color:#c4b5fd;">100% Charged</span>
+          </div>
+          <div class="meter-track">
+            <div class="meter-seg" id="meter-double-batt" style="background:#8b5cf6;width:100%;"></div>
+          </div>
+          <div style="font-size:0.76rem;color:var(--muted);margin-top:5px;" id="double-batt-note">
+            4.2 kW solar (~15.8 kWh/day) powers daytime load first, then charges both batteries.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Editable Equipment List -->
+    <section class="panel">
+      <div class="table-header-bar">
+        <div>
+          <h2>Home Appliances &amp; Runtime Editor</h2>
+          <p class="panel-desc" style="margin-bottom:0;">Check/uncheck devices, adjust quantities, wattage, or Day (8 AM–5 PM) vs. Night (5 PM–8 AM) hours</p>
+        </div>
+        <div class="summary-pills">
+          <div class="pill">Active Peak Load: <strong id="pill-peak-watts">0 W</strong></div>
+          <div class="pill">Monthly Total: <strong id="pill-monthly-kwh">0 Units</strong></div>
+          <button class="btn-reset" onclick="applyPreset('default')">Reset Defaults</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Use</th>
+              <th>Appliance / Equipment</th>
+              <th>Watts (Each)</th>
+              <th>Qty</th>
+              <th>Day Hrs <span style="font-weight:400;font-size:0.75rem;">(Solar)</span></th>
+              <th>Night Hrs <span style="font-weight:400;font-size:0.75rem;">(Batt/Grid)</span></th>
+              <th>Daily kWh</th>
+              <th>Monthly Units</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="appliance-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Add Custom Equipment -->
+      <div class="add-device-bar">
+        <div class="field-group" style="flex:1;min-width:170px;">
+          <label for="new-name">Add New Equipment Name</label>
+          <input type="text" id="new-name" placeholder="e.g., Refrigerator / PC / Washing Machine" style="width:100%;padding:7px 10px;" />
+        </div>
+        <div class="field-group">
+          <label for="new-watts">Watts (Each)</label>
+          <input type="number" id="new-watts" value="150" min="1" max="10000" />
+        </div>
+        <div class="field-group">
+          <label for="new-qty">Qty</label>
+          <input type="number" id="new-qty" value="1" min="1" max="50" />
+        </div>
+        <div class="field-group">
+          <label for="new-day">Day Hrs</label>
+          <input type="number" id="new-day" value="4" min="0" max="12" step="0.5" />
+        </div>
+        <div class="field-group">
+          <label for="new-night">Night Hrs</label>
+          <input type="number" id="new-night" value="4" min="0" max="15" step="0.5" />
+        </div>
+        <button class="btn-add" onclick="addCustomDevice()">+ Add Device</button>
+      </div>
+
+      <div class="tariff-note">
+        <strong>Calculation Notes (Dhaka 2026 Residential LT-A Tariff):</strong> Progressive slabs applied:
+        0–75 units @ ৳5.26 | 76–200 @ ৳8.50 | 201–300 @ ৳9.10 | 301–400 @ ৳9.62 | 401–600 @ ৳15.01 | 601+ @ ৳17.35, plus 3 kW demand charge (৳126), meter rent (৳40), and 5% VAT.
+        Usable LiFePO4 battery capacity is calculated down to a safe 20% cutoff (4.10 kWh for single 5.12 kWh pack; 8.20 kWh for double 10.24 kWh pack) with 92% inverter discharge efficiency.
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const PRESETS = {
+      default: [
+        { id: 1, name: '1.5 Ton Inverter AC (Avg Running)', watts: 1000, qty: 1, dayHrs: 5, nightHrs: 8, enabled: true },
+        { id: 2, name: 'Ceiling Fan', watts: 80, qty: 3, dayHrs: 7, nightHrs: 8, enabled: true },
+        { id: 3, name: 'Sony 43" Smart TV', watts: 65, qty: 2, dayHrs: 2, nightHrs: 6, enabled: true },
+        { id: 4, name: 'LED Wall Mount Light', watts: 60, qty: 4, dayHrs: 1, nightHrs: 7, enabled: true },
+        { id: 5, name: 'Wi-Fi Router', watts: 10, qty: 3, dayHrs: 12, nightHrs: 12, enabled: true },
+        { id: 6, name: 'iPhone / Mobile Charger', watts: 18, qty: 5, dayHrs: 2, nightHrs: 2, enabled: true }
+      ],
+      saver: [
+        { id: 1, name: '1.5 Ton Inverter AC (Avg Running)', watts: 1000, qty: 1, dayHrs: 5, nightHrs: 5, enabled: true },
+        { id: 2, name: 'Ceiling Fan', watts: 80, qty: 3, dayHrs: 7, nightHrs: 9, enabled: true },
+        { id: 3, name: 'Sony 43" Smart TV', watts: 65, qty: 2, dayHrs: 2, nightHrs: 5, enabled: true },
+        { id: 4, name: 'LED Wall Mount Light', watts: 60, qty: 4, dayHrs: 1, nightHrs: 6, enabled: true },
+        { id: 5, name: 'Wi-Fi Router', watts: 10, qty: 3, dayHrs: 12, nightHrs: 12, enabled: true },
+        { id: 6, name: 'iPhone / Mobile Charger', watts: 18, qty: 5, dayHrs: 2, nightHrs: 2, enabled: true }
+      ],
+      heavy: [
+        { id: 1, name: '1.5 Ton Inverter AC (Avg Running)', watts: 1000, qty: 1, dayHrs: 6, nightHrs: 10, enabled: true },
+        { id: 2, name: 'Ceiling Fan', watts: 80, qty: 3, dayHrs: 7, nightHrs: 8, enabled: true },
+        { id: 3, name: 'Sony 43" Smart TV', watts: 65, qty: 2, dayHrs: 2, nightHrs: 6, enabled: true },
+        { id: 4, name: 'LED Wall Mount Light', watts: 60, qty: 4, dayHrs: 1, nightHrs: 7, enabled: true },
+        { id: 5, name: 'Wi-Fi Router', watts: 10, qty: 3, dayHrs: 12, nightHrs: 12, enabled: true },
+        { id: 6, name: 'iPhone / Mobile Charger', watts: 18, qty: 5, dayHrs: 2, nightHrs: 2, enabled: true }
+      ]
+    };
+
+    let appliances = JSON.parse(JSON.stringify(PRESETS.default));
+    let nextId = 100;
+
+    function calculateBercBill(monthlyUnits) {
+      const units = Math.max(0, monthlyUnits);
+      const slabs = [
+        { limit: 75, rate: 5.26, label: '৳5.26 (0–75)' },
+        { limit: 200, rate: 8.50, label: '৳8.50 (76–200)' },
+        { limit: 300, rate: 9.10, label: '৳9.10 (201–300)' },
+        { limit: 400, rate: 9.62, label: '৳9.62 (301–400)' },
+        { limit: 600, rate: 15.01, label: '৳15.01 (401–600)' },
+        { limit: Infinity, rate: 17.35, label: '৳17.35 (601+)' }
+      ];
+
+      let remaining = units;
+      let prevLimit = 0;
+      let energyCost = 0;
+      let topSlab = '৳5.26 (0–75)';
+
+      for (const s of slabs) {
+        if (remaining <= 0) break;
+        const band = s.limit - prevLimit;
+        const usedInBand = Math.min(remaining, band);
+        energyCost += usedInBand * s.rate;
+        topSlab = s.label;
+        remaining -= usedInBand;
+        prevLimit = s.limit;
+      }
+
+      const fixedCharges = 126 + 40; // 3kW demand charge (42*3) + meter rent
+      const subTotal = energyCost + fixedCharges;
+      const totalWithVat = subTotal * 1.05;
+
+      return {
+        bill: Math.round(totalWithVat),
+        topSlab
+      };
+    }
+
+    function simulateSolarPackage(dayKwh, nightKwh, solarGenDaily, usableBatteryKwh) {
+      // Daytime solar covers daytime load directly first
+      const directSolarUsed = Math.min(dayKwh, solarGenDaily);
+      const dayGridUnmet = Math.max(0, dayKwh - solarGenDaily);
+
+      // Surplus daytime solar charges the LiFePO4 battery up to its usable capacity
+      const surplusSolar = Math.max(0, solarGenDaily - dayKwh);
+      const batteryCharged = Math.min(usableBatteryKwh, surplusSolar * 0.94);
+
+      // Nighttime load draws from charged battery (92% inverter discharge efficiency)
+      const usableNightFromBatt = batteryCharged * 0.92;
+      const nightCoveredByBatt = Math.min(nightKwh, usableNightFromBatt);
+      const nightGridUnmet = Math.max(0, nightKwh - nightCoveredByBatt);
+
+      const dailyGridTotal = dayGridUnmet + nightGridUnmet;
+      const monthlyGridUnits = Math.round(dailyGridTotal * 30);
+      const billInfo = calculateBercBill(monthlyGridUnits);
+      const battFillPct = usableBatteryKwh > 0 ? Math.min(100, Math.round((batteryCharged / usableBatteryKwh) * 100)) : 0;
+
+      return {
+        monthlyGridUnits,
+        bill: billInfo.bill,
+        topSlab: billInfo.topSlab,
+        batteryCharged,
+        battFillPct
+      };
+    }
+
+    function formatBDT(num) {
+      return '৳' + num.toLocaleString('en-IN');
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('appliance-tbody');
+      tbody.innerHTML = '';
+
+      appliances.forEach((item, idx) => {
+        const dailyKwh = item.enabled ? ((item.watts * item.qty * (item.dayHrs + item.nightHrs)) / 1000) : 0;
+        const monthlyKwh = dailyKwh * 30;
+
+        const tr = document.createElement('tr');
+        if (!item.enabled) tr.classList.add('disabled-row');
+
+        tr.innerHTML = `
+          <td>
+            <input type="checkbox" ${item.enabled ? 'checked' : ''} onchange="toggleDevice(${idx})" />
+          </td>
+          <td style="font-weight:600;">${escapeHtml(item.name)}</td>
+          <td>
+            <input type="number" value="${item.watts}" min="1" max="15000" onchange="updateField(${idx}, 'watts', this.value)" />
+          </td>
+          <td>
+            <div class="qty-control">
+              <button class="btn-step" onclick="stepQty(${idx}, -1)">-</button>
+              <span style="min-width:20px;text-align:center;font-weight:700;">${item.qty}</span>
+              <button class="btn-step" onclick="stepQty(${idx}, 1)">+</button>
+            </div>
+          </td>
+          <td>
+            <input type="number" value="${item.dayHrs}" min="0" max="12" step="0.5" onchange="updateField(${idx}, 'dayHrs', this.value)" />
+          </td>
+          <td>
+            <input type="number" value="${item.nightHrs}" min="0" max="15" step="0.5" onchange="updateField(${idx}, 'nightHrs', this.value)" />
+          </td>
+          <td style="color:var(--accent);font-weight:600;">${dailyKwh.toFixed(2)} kWh</td>
+          <td style="font-weight:700;">${Math.round(monthlyKwh)} units</td>
+          <td>
+            <button class="btn-del" onclick="removeDevice(${idx})">Remove</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      recalculateAll();
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+    }
+
+    function recalculateAll() {
+      let dayKwh = 0;
+      let nightKwh = 0;
+      let peakWatts = 0;
+
+      appliances.forEach(item => {
+        if (!item.enabled) return;
+        const totalW = item.watts * item.qty;
+        peakWatts += totalW;
+        dayKwh += (totalW * item.dayHrs) / 1000;
+        nightKwh += (totalW * item.nightHrs) / 1000;
+      });
+
+      const totalDailyKwh = dayKwh + nightKwh;
+      const totalMonthlyUnits = Math.round(totalDailyKwh * 30);
+
+      // 1. Grid Only
+      const gridRes = calculateBercBill(totalMonthlyUnits);
+
+      // 2. Single Battery: 3.6 kW solar (~13.5 kWh/day in Dhaka), 5.12 kWh battery (4.10 kWh usable)
+      const singleRes = simulateSolarPackage(dayKwh, nightKwh, 13.5, 4.10);
+      const singleSave = Math.max(0, gridRes.bill - singleRes.bill);
+
+      // 3. Double Battery: 4.2 kW solar (~15.8 kWh/day in Dhaka), 10.24 kWh battery (8.20 kWh usable)
+      const doubleRes = simulateSolarPackage(dayKwh, nightKwh, 15.8, 8.20);
+      const doubleSave = Math.max(0, gridRes.bill - doubleRes.bill);
+
+      // Update Summary Pills
+      document.getElementById('pill-peak-watts').textContent = peakWatts.toLocaleString() + ' W';
+      document.getElementById('pill-monthly-kwh').textContent = totalMonthlyUnits + ' Units';
+
+      // Update Cards
+      document.getElementById('card-grid-bill').textContent = formatBDT(gridRes.bill);
+      document.getElementById('card-grid-units').textContent = totalMonthlyUnits + ' Units';
+      document.getElementById('card-grid-slab').textContent = gridRes.topSlab;
+
+      document.getElementById('card-single-bill').textContent = formatBDT(singleRes.bill);
+      document.getElementById('card-single-save').textContent = 'Save ' + formatBDT(singleSave) + '/mo';
+      document.getElementById('card-single-units').textContent = singleRes.monthlyGridUnits + ' Units';
+      document.getElementById('card-single-slab').textContent = singleRes.topSlab;
+      const singlePaybackYrs = singleSave > 0 ? (250000 / (singleSave * 12)).toFixed(1) + ' yrs' : 'N/A';
+      document.getElementById('card-single-payback').textContent = '~৳2.50L / ' + singlePaybackYrs;
+
+      document.getElementById('card-double-bill').textContent = formatBDT(doubleRes.bill);
+      document.getElementById('card-double-save').textContent = 'Save ' + formatBDT(doubleSave) + '/mo';
+      document.getElementById('card-double-units').textContent = doubleRes.monthlyGridUnits + ' Units';
+      document.getElementById('card-double-slab').textContent = doubleRes.topSlab;
+      const doublePaybackYrs = doubleSave > 0 ? (345000 / (doubleSave * 12)).toFixed(1) + ' yrs' : 'N/A';
+      document.getElementById('card-double-payback').textContent = '~৳3.45L / ' + doublePaybackYrs;
+
+      // Update Color Bar Chart
+      const base = Math.max(gridRes.bill, 1);
+      document.getElementById('bar-txt-grid').textContent = formatBDT(gridRes.bill) + ' / mo';
+      document.getElementById('bar-fill-grid').style.width = gridRes.bill > 0 ? '100%' : '0%';
+
+      const singleBillPct = Math.min(100, Math.round((singleRes.bill / base) * 100));
+      const singleSavePct = Math.max(0, 100 - singleBillPct);
+      document.getElementById('bar-txt-single').textContent = `${formatBDT(singleRes.bill)} bill | Save ${formatBDT(singleSave)} (${singleSavePct}%)`;
+      document.getElementById('bar-fill-single-bill').style.width = singleBillPct + '%';
+      document.getElementById('bar-fill-single-bill').textContent = singleBillPct > 14 ? formatBDT(singleRes.bill) : '';
+      document.getElementById('bar-fill-single-save').style.width = singleSavePct + '%';
+      document.getElementById('bar-fill-single-save').textContent = singleSavePct > 18 ? `Saved ${formatBDT(singleSave)}` : '';
+
+      const doubleBillPct = Math.min(100, Math.round((doubleRes.bill / base) * 100));
+      const doubleSavePct = Math.max(0, 100 - doubleBillPct);
+      document.getElementById('bar-txt-double').textContent = `${formatBDT(doubleRes.bill)} bill | Save ${formatBDT(doubleSave)} (${doubleSavePct}%)`;
+      document.getElementById('bar-fill-double-bill').style.width = doubleBillPct + '%';
+      document.getElementById('bar-fill-double-bill').textContent = doubleBillPct > 14 ? formatBDT(doubleRes.bill) : '';
+      document.getElementById('bar-fill-double-save').style.width = doubleSavePct + '%';
+      document.getElementById('bar-fill-double-save').textContent = doubleSavePct > 18 ? `Saved ${formatBDT(doubleSave)}` : '';
+
+      // Update Energy Meters
+      document.getElementById('daily-total-kwh').textContent = totalDailyKwh.toFixed(2) + ' kWh / day';
+      const dayShare = totalDailyKwh > 0 ? Math.round((dayKwh / totalDailyKwh) * 100) : 50;
+      const nightShare = 100 - dayShare;
+      document.getElementById('meter-day').style.width = dayShare + '%';
+      document.getElementById('meter-night').style.width = nightShare + '%';
+      document.getElementById('lbl-day-kwh').textContent = `Daytime: ${dayKwh.toFixed(2)} kWh (${dayShare}%)`;
+      document.getElementById('lbl-night-kwh').textContent = `Nighttime: ${nightKwh.toFixed(2)} kWh (${nightShare}%)`;
+
+      document.getElementById('single-batt-status').textContent = `${singleRes.battFillPct}% Charged (${singleRes.batteryCharged.toFixed(2)} / 4.10 kWh)`;
+      document.getElementById('meter-single-batt').style.width = singleRes.battFillPct + '%';
+
+      document.getElementById('double-batt-status').textContent = `${doubleRes.battFillPct}% Charged (${doubleRes.batteryCharged.toFixed(2)} / 8.20 kWh)`;
+      document.getElementById('meter-double-batt').style.width = doubleRes.battFillPct + '%';
+    }
+
+    function toggleDevice(idx) {
+      appliances[idx].enabled = !appliances[idx].enabled;
+      renderTable();
+    }
+
+    function stepQty(idx, delta) {
+      appliances[idx].qty = Math.max(1, appliances[idx].qty + delta);
+      renderTable();
+    }
+
+    function updateField(idx, field, val) {
+      const num = parseFloat(val);
+      if (isNaN(num) || num < 0) return;
+      appliances[idx][field] = num;
+      renderTable();
+    }
+
+    function removeDevice(idx) {
+      appliances.splice(idx, 1);
+      renderTable();
+    }
+
+    function addCustomDevice() {
+      const nameInput = document.getElementById('new-name');
+      const name = nameInput.value.trim() || 'Custom Appliance';
+      const watts = Math.max(1, parseFloat(document.getElementById('new-watts').value) || 100);
+      const qty = Math.max(1, parseInt(document.getElementById('new-qty').value) || 1);
+      const dayHrs = Math.max(0, parseFloat(document.getElementById('new-day').value) || 0);
+      const nightHrs = Math.max(0, parseFloat(document.getElementById('new-night').value) || 0);
+
+      appliances.push({
+        id: nextId++,
+        name,
+        watts,
+        qty,
+        dayHrs,
+        nightHrs,
+        enabled: true
+      });
+
+      nameInput.value = '';
+      renderTable();
+    }
+
+    function applyPreset(key) {
+      document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+      const btn = document.getElementById('preset-' + key);
+      if (btn) btn.classList.add('active');
+      appliances = JSON.parse(JSON.stringify(PRESETS[key]));
+      renderTable();
+    }
+
+    // Initial render
+    renderTable();
+  </script>
+</body>
+</html>
