@@ -16,7 +16,7 @@
       --grid-color: #f43f5e;
       --single-color: #10b981;
       --double-color: #8b5cf6;
-      --amber: #f59e0b;
+      --custom-color: #f59e0b;
     }
 
     * {
@@ -34,7 +34,7 @@
     }
 
     .container {
-      max-width: 1260px;
+      max-width: 1320px;
       margin: 0 auto;
     }
 
@@ -98,7 +98,7 @@
     /* Package Comparison Cards */
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
       gap: 16px;
       margin-bottom: 24px;
     }
@@ -119,6 +119,7 @@
     .pkg-card.grid-card { border-top: 4px solid var(--grid-color); }
     .pkg-card.single-card { border-top: 4px solid var(--single-color); }
     .pkg-card.double-card { border-top: 4px solid var(--double-color); }
+    .pkg-card.custom-card { border-top: 4px solid var(--custom-color); }
 
     .pkg-badge {
       display: inline-block;
@@ -134,16 +135,39 @@
     .grid-card .pkg-badge { background: rgba(244, 63, 94, 0.18); color: #fda4af; }
     .single-card .pkg-badge { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; }
     .double-card .pkg-badge { background: rgba(139, 92, 246, 0.18); color: #c4b5fd; }
+    .custom-card .pkg-badge { background: rgba(245, 158, 11, 0.18); color: #fcd34d; }
 
     .pkg-title {
-      font-size: 1.15rem;
+      font-size: 1.12rem;
       font-weight: 700;
     }
 
     .pkg-sub {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--muted);
-      margin-bottom: 14px;
+      margin-bottom: 12px;
+      min-height: 36px;
+    }
+
+    .build-cost-banner {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 12px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .build-cost-banner span {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .build-cost-banner strong {
+      font-size: 1.05rem;
+      color: #fff;
     }
 
     .bill-row {
@@ -156,18 +180,19 @@
     }
 
     .bill-amount {
-      font-size: 1.75rem;
+      font-size: 1.65rem;
       font-weight: 800;
     }
 
     .grid-card .bill-amount { color: #fb7185; }
     .single-card .bill-amount { color: #34d399; }
     .double-card .bill-amount { color: #a78bfa; }
+    .custom-card .bill-amount { color: #fbbf24; }
 
     .savings-pill {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 700;
-      padding: 4px 10px;
+      padding: 4px 9px;
       border-radius: 8px;
       background: rgba(16, 185, 129, 0.15);
       color: #6ee7b7;
@@ -175,7 +200,7 @@
 
     .stat-list {
       list-style: none;
-      font-size: 0.85rem;
+      font-size: 0.83rem;
       display: grid;
       gap: 6px;
     }
@@ -199,7 +224,7 @@
       margin-bottom: 24px;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 920px) {
       .visuals-grid {
         grid-template-columns: 1fr;
       }
@@ -210,6 +235,7 @@
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 18px;
+      margin-bottom: 24px;
     }
 
     .panel h2 {
@@ -226,22 +252,135 @@
       margin-bottom: 16px;
     }
 
+    /* Build Cost & Hardware Customizer Section */
+    .build-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.15fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 1024px) {
+      .build-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .build-box {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .build-box.single-box { border-top: 3px solid var(--single-color); }
+    .build-box.double-box { border-top: 3px solid var(--double-color); }
+    .build-box.custom-box { border-top: 3px solid var(--custom-color); }
+
+    .build-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .build-box-header h3 {
+      font-size: 0.98rem;
+      font-weight: 700;
+    }
+
+    .build-total-tag {
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .bom-list {
+      list-style: none;
+      display: grid;
+      gap: 8px;
+      font-size: 0.83rem;
+      margin-bottom: 12px;
+    }
+
+    .bom-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+    }
+
+    .bom-list li strong {
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .custom-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .ctrl-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .ctrl-item label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .ctrl-item select, .ctrl-item input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 7px;
+      padding: 6px 8px;
+      font-size: 0.82rem;
+    }
+
+    .ctrl-item select:focus, .ctrl-item input:focus {
+      outline: none;
+      border-color: var(--custom-color);
+    }
+
+    .custom-summary-strip {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      color: #fde68a;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
     /* Custom CSS Color Bar Chart */
     .chart-group {
-      margin-bottom: 16px;
+      margin-bottom: 15px;
     }
 
     .chart-label-row {
       display: flex;
       justify-content: space-between;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       font-weight: 600;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
     .bar-track {
       width: 100%;
-      height: 26px;
+      height: 25px;
       background: #0f172a;
       border-radius: 8px;
       overflow: hidden;
@@ -254,7 +393,7 @@
       display: flex;
       align-items: center;
       padding-left: 10px;
-      font-size: 0.78rem;
+      font-size: 0.77rem;
       font-weight: 700;
       color: #fff;
       transition: width 0.35s ease;
@@ -266,12 +405,14 @@
     .bar-save-single { background: rgba(52, 211, 153, 0.22); color: #6ee7b7; }
     .bar-bill-double { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
     .bar-save-double { background: rgba(167, 139, 250, 0.22); color: #ddd6fe; }
+    .bar-bill-custom { background: linear-gradient(90deg, #d97706, #fbbf24); color: #0f172a; }
+    .bar-save-custom { background: rgba(251, 191, 36, 0.22); color: #fde68a; }
 
     .legend-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 14px;
-      font-size: 0.78rem;
+      gap: 12px;
+      font-size: 0.77rem;
       color: var(--muted);
       margin-top: 10px;
     }
@@ -289,20 +430,20 @@
       background: #0f172a;
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 12px;
-      margin-bottom: 12px;
+      padding: 11px 12px;
+      margin-bottom: 10px;
     }
 
     .energy-header {
       display: flex;
       justify-content: space-between;
-      font-size: 0.84rem;
+      font-size: 0.82rem;
       font-weight: 600;
       margin-bottom: 6px;
     }
 
     .meter-track {
-      height: 14px;
+      height: 13px;
       background: #1e293b;
       border-radius: 999px;
       overflow: hidden;
@@ -312,14 +453,6 @@
     .meter-seg {
       height: 100%;
       transition: width 0.35s ease;
-    }
-
-    .slab-breakdown {
-      margin-top: 12px;
-      font-size: 0.8rem;
-      color: var(--muted);
-      display: grid;
-      gap: 4px;
     }
 
     /* Appliance Editor Table */
@@ -387,7 +520,7 @@
       cursor: pointer;
     }
 
-    input[type="number"], input[type="text"], select {
+    .table-wrap input[type="number"], .add-device-bar input[type="number"], .add-device-bar input[type="text"] {
       background: #0f172a;
       border: 1px solid var(--border);
       color: var(--text);
@@ -397,7 +530,7 @@
       font-family: inherit;
     }
 
-    input[type="number"] {
+    .table-wrap input[type="number"], .add-device-bar input[type="number"] {
       width: 68px;
       text-align: center;
     }
@@ -503,7 +636,7 @@
     <header>
       <div>
         <h1>Interactive Solar &amp; Grid Bill Calculator</h1>
-        <p>Compare Grid Only vs. Single Battery &amp; Double Battery Solar Packages (Dhaka BERC Residential Tariff)</p>
+        <p>Compare Grid Only, Single Battery, Double Battery &amp; Your Custom Solar Build (Dhaka BERC Tariff)</p>
       </div>
       <div class="presets">
         <button class="btn-preset active" id="preset-default" onclick="applyPreset('default')">Your 13h AC Split Schedule</button>
@@ -512,13 +645,17 @@
       </div>
     </header>
 
-    <!-- 3 Package Summary Cards -->
+    <!-- 4 Package Summary Cards (Grid, Single, Double, Custom) -->
     <section class="cards-grid">
       <!-- Grid Only -->
       <div class="pkg-card grid-card">
         <span class="pkg-badge">Baseline — No Solar</span>
         <div class="pkg-title">Grid Electricity Only</div>
         <div class="pkg-sub">100% Utility Power (DESCO / DPDC)</div>
+        <div class="build-cost-banner">
+          <span>System Build Cost:</span>
+          <strong style="color:#fda4af;">৳0</strong>
+        </div>
         <div class="bill-row">
           <div>
             <div style="font-size:0.75rem;color:var(--muted);">Monthly Grid Bill</div>
@@ -533,7 +670,7 @@
           <li><span>Grid Units Bought:</span> <strong id="card-grid-units">0 kWh</strong></li>
           <li><span>Top Tariff Slab Reached:</span> <strong id="card-grid-slab">-</strong></li>
           <li><span>Blackout Backup:</span> <strong>None (0 hrs)</strong></li>
-          <li><span>Upfront Hardware Cost:</span> <strong>৳0</strong></li>
+          <li><span>Payback Time:</span> <strong>—</strong></li>
         </ul>
       </div>
 
@@ -542,6 +679,10 @@
         <span class="pkg-badge">Best ROI &amp; Fastest Payback</span>
         <div class="pkg-title">Package 1: Single Battery</div>
         <div class="pkg-sub">3.6 kW Panels + 5 kW Inverter + 1× 48V 100Ah (5.12 kWh)</div>
+        <div class="build-cost-banner">
+          <span>Total Build Cost:</span>
+          <strong id="card-single-build" style="color:#6ee7b7;">৳2,50,000</strong>
+        </div>
         <div class="bill-row">
           <div>
             <div style="font-size:0.75rem;color:var(--muted);">New Monthly Bill</div>
@@ -556,7 +697,7 @@
           <li><span>Grid Units Bought:</span> <strong id="card-single-units">0 kWh</strong></li>
           <li><span>Top Tariff Slab Reached:</span> <strong id="card-single-slab">-</strong></li>
           <li><span>Night Battery Usable (to 20%):</span> <strong>4.10 kWh (~2.5h AC)</strong></li>
-          <li><span>Est. Package Cost / Payback:</span> <strong id="card-single-payback">~৳2.50L / -</strong></li>
+          <li><span>Est. Payback Period:</span> <strong id="card-single-payback">-</strong></li>
         </ul>
       </div>
 
@@ -565,6 +706,10 @@
         <span class="pkg-badge">Maximum Independence</span>
         <div class="pkg-title">Package 2: Double Battery</div>
         <div class="pkg-sub">4.2 kW Panels + 5 kW Inverter + 2× 48V 100Ah (10.24 kWh)</div>
+        <div class="build-cost-banner">
+          <span>Total Build Cost:</span>
+          <strong id="card-double-build" style="color:#c4b5fd;">৳3,65,000</strong>
+        </div>
         <div class="bill-row">
           <div>
             <div style="font-size:0.75rem;color:var(--muted);">New Monthly Bill</div>
@@ -579,16 +724,145 @@
           <li><span>Grid Units Bought:</span> <strong id="card-double-units">0 kWh</strong></li>
           <li><span>Top Tariff Slab Reached:</span> <strong id="card-double-slab">-</strong></li>
           <li><span>Night Battery Usable (to 20%):</span> <strong>8.20 kWh (~5.5h AC)</strong></li>
-          <li><span>Est. Package Cost / Payback:</span> <strong id="card-double-payback">~৳3.45L / -</strong></li>
+          <li><span>Est. Payback Period:</span> <strong id="card-double-payback">-</strong></li>
         </ul>
+      </div>
+
+      <!-- Custom Build Card -->
+      <div class="pkg-card custom-card">
+        <span class="pkg-badge">Your Custom Configuration</span>
+        <div class="pkg-title">Package 3: Custom Build</div>
+        <div class="pkg-sub" id="card-custom-sub">Custom Panels + Inverter + Battery Setup</div>
+        <div class="build-cost-banner">
+          <span>Custom Build Cost:</span>
+          <strong id="card-custom-build" style="color:#fcd34d;">৳0</strong>
+        </div>
+        <div class="bill-row">
+          <div>
+            <div style="font-size:0.75rem;color:var(--muted);">New Monthly Bill</div>
+            <div class="bill-amount" id="card-custom-bill">৳0</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.75rem;color:var(--muted);">Monthly Savings</div>
+            <div class="savings-pill" id="card-custom-save" style="background:rgba(245,158,11,0.2);color:#fde68a;">Save ৳0</div>
+          </div>
+        </div>
+        <ul class="stat-list">
+          <li><span>Grid Units Bought:</span> <strong id="card-custom-units">0 kWh</strong></li>
+          <li><span>Top Tariff Slab Reached:</span> <strong id="card-custom-slab">-</strong></li>
+          <li><span>Usable Battery (to 20%):</span> <strong id="card-custom-usable">0 kWh</strong></li>
+          <li><span>Est. Payback Period:</span> <strong id="card-custom-payback">-</strong></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- System Build Cost & Hardware Customizer -->
+    <section class="panel">
+      <h2>System Build Cost Breakdown &amp; Custom Hardware Builder (Dhaka 2026 Market Rates)</h2>
+      <p class="panel-desc">Inspect itemized build costs for Single &amp; Double Battery setups, or customize panels, inverter, and battery count on the right to see instant price &amp; bill updates</p>
+
+      <div class="build-grid">
+        <!-- Single Battery BOM -->
+        <div class="build-box single-box">
+          <div>
+            <div class="build-box-header">
+              <h3 style="color:#6ee7b7;">Single Battery Build</h3>
+              <span class="build-total-tag" style="color:#34d399;">৳2,50,000</span>
+            </div>
+            <ul class="bom-list">
+              <li><span>Solar Panels (6× 600W = 3.6 kW):</span> <strong>৳78,000</strong></li>
+              <li><span>5 kW 48V Pure Sine Hybrid Inverter:</span> <strong>৳62,000</strong></li>
+              <li><span>1× 48V 100Ah LiFePO4 (5.12 kWh):</span> <strong>৳88,000</strong></li>
+              <li><span>Mounting Structure, Breakers, SPD &amp; Install:</span> <strong>৳22,000</strong></li>
+            </ul>
+          </div>
+          <div style="font-size:0.77rem;color:var(--muted);border-top:1px solid var(--border);padding-top:8px;">
+            Generates ~13.5 kWh/day | 4.10 kWh usable night storage
+          </div>
+        </div>
+
+        <!-- Double Battery BOM -->
+        <div class="build-box double-box">
+          <div>
+            <div class="build-box-header">
+              <h3 style="color:#c4b5fd;">Double Battery Build</h3>
+              <span class="build-total-tag" style="color:#a78bfa;">৳3,65,000</span>
+            </div>
+            <ul class="bom-list">
+              <li><span>Solar Panels (7× 600W = 4.2 kW):</span> <strong>৳91,000</strong></li>
+              <li><span>5 kW 48V Pure Sine Hybrid Inverter:</span> <strong>৳68,000</strong></li>
+              <li><span>2× 48V 100Ah LiFePO4 (10.24 kWh):</span> <strong>৳1,76,000</strong></li>
+              <li><span>Heavy Roof Frame, Breakers, SPD &amp; Install:</span> <strong>৳30,000</strong></li>
+            </ul>
+          </div>
+          <div style="font-size:0.77rem;color:var(--muted);border-top:1px solid var(--border);padding-top:8px;">
+            Generates ~15.8 kWh/day | 8.20 kWh usable night storage
+          </div>
+        </div>
+
+        <!-- Custom Build Interactive Configurator -->
+        <div class="build-box custom-box">
+          <div>
+            <div class="build-box-header">
+              <h3 style="color:#fcd34d;">Customize Your Own Build</h3>
+              <span class="build-total-tag" id="custom-box-total" style="color:#fbbf24;">৳2,05,000</span>
+            </div>
+
+            <div class="custom-controls">
+              <div class="ctrl-item">
+                <label for="cust-panels">Number of 600W Panels</label>
+                <select id="cust-panels" onchange="recalculateAll()">
+                  <option value="0">0 Panels (No Solar — IPS Only)</option>
+                  <option value="2">2 Panels (1.2 kW) — ৳26,000</option>
+                  <option value="4">4 Panels (2.4 kW) — ৳52,000</option>
+                  <option value="5" selected>5 Panels (3.0 kW) — ৳65,000</option>
+                  <option value="6">6 Panels (3.6 kW) — ৳78,000</option>
+                  <option value="7">7 Panels (4.2 kW) — ৳91,000</option>
+                  <option value="8">8 Panels (4.8 kW) — ৳1,04,000</option>
+                  <option value="10">10 Panels (6.0 kW) — ৳1,30,000</option>
+                </select>
+              </div>
+
+              <div class="ctrl-item">
+                <label for="cust-inverter">Hybrid Inverter Size</label>
+                <select id="cust-inverter" onchange="recalculateAll()">
+                  <option value="48000" data-kw="3.5">3.5 kW 48V Hybrid — ৳48,000</option>
+                  <option value="62000" data-kw="5.0" selected>5.0 kW 48V Hybrid — ৳62,000</option>
+                  <option value="88000" data-kw="6.0">6.0 kW 48V Deye/Growatt — ৳88,000</option>
+                  <option value="115000" data-kw="8.0">8.0 kW 48V Heavy Hybrid — ৳1,15,000</option>
+                </select>
+              </div>
+
+              <div class="ctrl-item">
+                <label for="cust-batts">48V 100Ah LiFePO4 Batteries</label>
+                <select id="cust-batts" onchange="recalculateAll()">
+                  <option value="0">0 Batteries (Grid-Tied Daytime Only)</option>
+                  <option value="1" selected>1 Battery (5.12 kWh) — ৳88,000</option>
+                  <option value="2">2 Batteries (10.24 kWh) — ৳1,76,000</option>
+                  <option value="3">3 Batteries (15.36 kWh) — ৳2,64,000</option>
+                </select>
+              </div>
+
+              <div class="ctrl-item">
+                <label for="cust-install">Mounting, Wiring &amp; Install (BDT)</label>
+                <input type="number" id="cust-install" value="20000" min="0" max="200000" step="1000" onchange="recalculateAll()" />
+              </div>
+            </div>
+          </div>
+
+          <div class="custom-summary-strip">
+            <span id="custom-gen-label">Solar: 3.0 kW (~11.3 kWh/day)</span>
+            <span id="custom-batt-label">Usable Battery: 4.10 kWh</span>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- Visual Color Charts & Energy Flow -->
     <section class="visuals-grid">
-      <div class="panel">
+      <div class="panel" style="margin-bottom:0;">
         <h2>Monthly Bill vs. Savings Visual Comparison</h2>
-        <p class="panel-desc">Colored bars show how much of your baseline bill is eliminated by each solar battery package</p>
+        <p class="panel-desc">Colored bars show how much of your baseline bill is eliminated by each package</p>
 
         <div class="chart-group">
           <div class="chart-label-row">
@@ -602,7 +876,7 @@
 
         <div class="chart-group">
           <div class="chart-label-row">
-            <span>Package 1: Single Battery (5.12 kWh)</span>
+            <span>Package 1: Single Battery (Build: ৳2.50L)</span>
             <span id="bar-txt-single" style="color:#6ee7b7;">৳0 bill | Save ৳0</span>
           </div>
           <div class="bar-track">
@@ -613,7 +887,7 @@
 
         <div class="chart-group">
           <div class="chart-label-row">
-            <span>Package 2: Double Battery (10.24 kWh)</span>
+            <span>Package 2: Double Battery (Build: ৳3.65L)</span>
             <span id="bar-txt-double" style="color:#c4b5fd;">৳0 bill | Save ৳0</span>
           </div>
           <div class="bar-track">
@@ -622,18 +896,28 @@
           </div>
         </div>
 
+        <div class="chart-group" style="margin-bottom:8px;">
+          <div class="chart-label-row">
+            <span id="bar-lbl-custom">Package 3: Custom Build</span>
+            <span id="bar-txt-custom" style="color:#fcd34d;">৳0 bill | Save ৳0</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill bar-bill-custom" id="bar-fill-custom-bill" style="width:25%;">Bill</div>
+            <div class="bar-fill bar-save-custom" id="bar-fill-custom-save" style="width:75%;">Saved</div>
+          </div>
+        </div>
+
         <div class="legend-row">
-          <span><i class="legend-dot" style="background:#fb7185;"></i>Grid Only Bill</span>
-          <span><i class="legend-dot" style="background:#34d399;"></i>Single Battery Remaining Bill</span>
-          <span><i class="legend-dot" style="background:rgba(52,211,153,0.35);"></i>Single Battery Saved</span>
-          <span><i class="legend-dot" style="background:#a78bfa;"></i>Double Battery Remaining Bill</span>
-          <span><i class="legend-dot" style="background:rgba(167,139,250,0.35);"></i>Double Battery Saved</span>
+          <span><i class="legend-dot" style="background:#fb7185;"></i>Grid Only</span>
+          <span><i class="legend-dot" style="background:#34d399;"></i>Single Batt Bill / Saved</span>
+          <span><i class="legend-dot" style="background:#a78bfa;"></i>Double Batt Bill / Saved</span>
+          <span><i class="legend-dot" style="background:#fbbf24;"></i>Custom Build Bill / Saved</span>
         </div>
       </div>
 
-      <div class="panel">
+      <div class="panel" style="margin-bottom:0;">
         <h2>Daily Energy &amp; Battery Charge Balance</h2>
-        <p class="panel-desc">How your daytime solar generation powers loads and charges batteries for night use</p>
+        <p class="panel-desc">How daytime solar powers appliances and recharges batteries for night use</p>
 
         <div class="energy-box">
           <div class="energy-header">
@@ -644,7 +928,7 @@
             <div class="meter-seg" id="meter-day" style="background:#f59e0b;width:50%;" title="Daytime Load"></div>
             <div class="meter-seg" id="meter-night" style="background:#38bdf8;width:50%;" title="Nighttime Load"></div>
           </div>
-          <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--muted);margin-top:6px;">
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--muted);margin-top:5px;">
             <span id="lbl-day-kwh" style="color:#fbbf24;">Daytime: 0 kWh</span>
             <span id="lbl-night-kwh" style="color:#7dd3fc;">Nighttime: 0 kWh</span>
           </div>
@@ -652,34 +936,38 @@
 
         <div class="energy-box">
           <div class="energy-header">
-            <span>Single Battery Daily Solar Charge</span>
+            <span>Single Battery Daily Charge</span>
             <span id="single-batt-status" style="color:#6ee7b7;">100% Charged</span>
           </div>
           <div class="meter-track">
             <div class="meter-seg" id="meter-single-batt" style="background:#10b981;width:100%;"></div>
           </div>
-          <div style="font-size:0.76rem;color:var(--muted);margin-top:5px;" id="single-batt-note">
-            3.6 kW solar (~13.5 kWh/day) powers daytime load first, then charges battery.
-          </div>
         </div>
 
-        <div class="energy-box" style="margin-bottom:0;">
+        <div class="energy-box">
           <div class="energy-header">
-            <span>Double Battery Daily Solar Charge</span>
+            <span>Double Battery Daily Charge</span>
             <span id="double-batt-status" style="color:#c4b5fd;">100% Charged</span>
           </div>
           <div class="meter-track">
             <div class="meter-seg" id="meter-double-batt" style="background:#8b5cf6;width:100%;"></div>
           </div>
-          <div style="font-size:0.76rem;color:var(--muted);margin-top:5px;" id="double-batt-note">
-            4.2 kW solar (~15.8 kWh/day) powers daytime load first, then charges both batteries.
+        </div>
+
+        <div class="energy-box" style="margin-bottom:0;">
+          <div class="energy-header">
+            <span>Custom Build Daily Charge</span>
+            <span id="custom-batt-status" style="color:#fcd34d;">100% Charged</span>
+          </div>
+          <div class="meter-track">
+            <div class="meter-seg" id="meter-custom-batt" style="background:#f59e0b;width:100%;"></div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Editable Equipment List -->
-    <section class="panel">
+    <section class="panel" style="margin-top:24px;margin-bottom:0;">
       <div class="table-header-bar">
         <div>
           <h2>Home Appliances &amp; Runtime Editor</h2>
@@ -737,9 +1025,9 @@
       </div>
 
       <div class="tariff-note">
-        <strong>Calculation Notes (Dhaka 2026 Residential LT-A Tariff):</strong> Progressive slabs applied:
+        <strong>Calculation Notes (Dhaka 2026 Residential LT-A Tariff &amp; Hardware Pricing):</strong> Progressive slabs applied:
         0–75 units @ ৳5.26 | 76–200 @ ৳8.50 | 201–300 @ ৳9.10 | 301–400 @ ৳9.62 | 401–600 @ ৳15.01 | 601+ @ ৳17.35, plus 3 kW demand charge (৳126), meter rent (৳40), and 5% VAT.
-        Usable LiFePO4 battery capacity is calculated down to a safe 20% cutoff (4.10 kWh for single 5.12 kWh pack; 8.20 kWh for double 10.24 kWh pack) with 92% inverter discharge efficiency.
+        Hardware estimates use 2026 Dhaka market rates: 600W N-Type Bifacial Panel (~৳13,000/panel), 48V 100Ah LiFePO4 Battery Pack (~৳88,000/pack), and 48V Pure Sine Hybrid Inverters.
       </div>
     </section>
   </div>
@@ -771,6 +1059,9 @@
         { id: 6, name: 'iPhone / Mobile Charger', watts: 18, qty: 5, dayHrs: 2, nightHrs: 2, enabled: true }
       ]
     };
+
+    const SINGLE_BUILD_COST = 250000;
+    const DOUBLE_BUILD_COST = 365000;
 
     let appliances = JSON.parse(JSON.stringify(PRESETS.default));
     let nextId = 100;
@@ -812,8 +1103,6 @@
     }
 
     function simulateSolarPackage(dayKwh, nightKwh, solarGenDaily, usableBatteryKwh) {
-      // Daytime solar covers daytime load directly first
-      const directSolarUsed = Math.min(dayKwh, solarGenDaily);
       const dayGridUnmet = Math.max(0, dayKwh - solarGenDaily);
 
       // Surplus daytime solar charges the LiFePO4 battery up to its usable capacity
@@ -840,7 +1129,11 @@
     }
 
     function formatBDT(num) {
-      return '৳' + num.toLocaleString('en-IN');
+      return '৳' + Math.round(num).toLocaleString('en-IN');
+    }
+
+    function formatLakhs(num) {
+      return '৳' + (num / 100000).toFixed(2) + 'L';
     }
 
     function renderTable() {
@@ -910,36 +1203,74 @@
       // 1. Grid Only
       const gridRes = calculateBercBill(totalMonthlyUnits);
 
-      // 2. Single Battery: 3.6 kW solar (~13.5 kWh/day in Dhaka), 5.12 kWh battery (4.10 kWh usable)
+      // 2. Single Battery: 3.6 kW solar (~13.5 kWh/day), 5.12 kWh battery (4.10 kWh usable)
       const singleRes = simulateSolarPackage(dayKwh, nightKwh, 13.5, 4.10);
       const singleSave = Math.max(0, gridRes.bill - singleRes.bill);
 
-      // 3. Double Battery: 4.2 kW solar (~15.8 kWh/day in Dhaka), 10.24 kWh battery (8.20 kWh usable)
+      // 3. Double Battery: 4.2 kW solar (~15.8 kWh/day), 10.24 kWh battery (8.20 kWh usable)
       const doubleRes = simulateSolarPackage(dayKwh, nightKwh, 15.8, 8.20);
       const doubleSave = Math.max(0, gridRes.bill - doubleRes.bill);
+
+      // 4. Custom Build Readouts
+      const panelCount = parseInt(document.getElementById('cust-panels').value) || 0;
+      const invSelect = document.getElementById('cust-inverter');
+      const invCost = parseFloat(invSelect.value) || 62000;
+      const invKw = invSelect.options[invSelect.selectedIndex].getAttribute('data-kw');
+      const battCount = parseInt(document.getElementById('cust-batts').value) || 0;
+      const installCost = Math.max(0, parseFloat(document.getElementById('cust-install').value) || 0);
+
+      const panelCost = panelCount * 13000;
+      const battCost = battCount * 88000;
+      const customBuildCost = panelCost + invCost + battCost + installCost;
+
+      const customSolarKw = (panelCount * 0.6).toFixed(1);
+      const customSolarDaily = panelCount * 2.25; // ~3.75 peak sun hrs * 0.6kW per panel
+      const customUsableBatt = battCount * 4.10;
+
+      const customRes = simulateSolarPackage(dayKwh, nightKwh, customSolarDaily, customUsableBatt);
+      const customSave = Math.max(0, gridRes.bill - customRes.bill);
 
       // Update Summary Pills
       document.getElementById('pill-peak-watts').textContent = peakWatts.toLocaleString() + ' W';
       document.getElementById('pill-monthly-kwh').textContent = totalMonthlyUnits + ' Units';
 
-      // Update Cards
+      // Update Grid Card
       document.getElementById('card-grid-bill').textContent = formatBDT(gridRes.bill);
       document.getElementById('card-grid-units').textContent = totalMonthlyUnits + ' Units';
       document.getElementById('card-grid-slab').textContent = gridRes.topSlab;
 
+      // Update Single Card
+      document.getElementById('card-single-build').textContent = formatBDT(SINGLE_BUILD_COST);
       document.getElementById('card-single-bill').textContent = formatBDT(singleRes.bill);
       document.getElementById('card-single-save').textContent = 'Save ' + formatBDT(singleSave) + '/mo';
       document.getElementById('card-single-units').textContent = singleRes.monthlyGridUnits + ' Units';
       document.getElementById('card-single-slab').textContent = singleRes.topSlab;
-      const singlePaybackYrs = singleSave > 0 ? (250000 / (singleSave * 12)).toFixed(1) + ' yrs' : 'N/A';
-      document.getElementById('card-single-payback').textContent = '~৳2.50L / ' + singlePaybackYrs;
+      const singlePayback = singleSave > 0 ? (SINGLE_BUILD_COST / (singleSave * 12)).toFixed(1) + ' Years' : 'N/A';
+      document.getElementById('card-single-payback').textContent = singlePayback;
 
+      // Update Double Card
+      document.getElementById('card-double-build').textContent = formatBDT(DOUBLE_BUILD_COST);
       document.getElementById('card-double-bill').textContent = formatBDT(doubleRes.bill);
       document.getElementById('card-double-save').textContent = 'Save ' + formatBDT(doubleSave) + '/mo';
       document.getElementById('card-double-units').textContent = doubleRes.monthlyGridUnits + ' Units';
       document.getElementById('card-double-slab').textContent = doubleRes.topSlab;
-      const doublePaybackYrs = doubleSave > 0 ? (345000 / (doubleSave * 12)).toFixed(1) + ' yrs' : 'N/A';
-      document.getElementById('card-double-payback').textContent = '~৳3.45L / ' + doublePaybackYrs;
+      const doublePayback = doubleSave > 0 ? (DOUBLE_BUILD_COST / (doubleSave * 12)).toFixed(1) + ' Years' : 'N/A';
+      document.getElementById('card-double-payback').textContent = doublePayback;
+
+      // Update Custom Card & Custom Config Box
+      document.getElementById('card-custom-sub').textContent = `${customSolarKw} kW Panels + ${invKw} kW Inv + ${battCount}× Battery`;
+      document.getElementById('card-custom-build').textContent = formatBDT(customBuildCost);
+      document.getElementById('custom-box-total').textContent = formatBDT(customBuildCost);
+      document.getElementById('card-custom-bill').textContent = formatBDT(customRes.bill);
+      document.getElementById('card-custom-save').textContent = 'Save ' + formatBDT(customSave) + '/mo';
+      document.getElementById('card-custom-units').textContent = customRes.monthlyGridUnits + ' Units';
+      document.getElementById('card-custom-slab').textContent = customRes.topSlab;
+      document.getElementById('card-custom-usable').textContent = customUsableBatt.toFixed(2) + ' kWh';
+      const customPayback = customSave > 0 ? (customBuildCost / (customSave * 12)).toFixed(1) + ' Years' : 'N/A';
+      document.getElementById('card-custom-payback').textContent = customPayback;
+
+      document.getElementById('custom-gen-label').textContent = `Solar: ${customSolarKw} kW (~${customSolarDaily.toFixed(1)} kWh/day)`;
+      document.getElementById('custom-batt-label').textContent = `Usable Battery: ${customUsableBatt.toFixed(2)} kWh`;
 
       // Update Color Bar Chart
       const base = Math.max(gridRes.bill, 1);
@@ -962,6 +1293,15 @@
       document.getElementById('bar-fill-double-save').style.width = doubleSavePct + '%';
       document.getElementById('bar-fill-double-save').textContent = doubleSavePct > 18 ? `Saved ${formatBDT(doubleSave)}` : '';
 
+      const customBillPct = Math.min(100, Math.round((customRes.bill / base) * 100));
+      const customSavePct = Math.max(0, 100 - customBillPct);
+      document.getElementById('bar-lbl-custom').textContent = `Package 3: Custom Build (Build: ${formatLakhs(customBuildCost)})`;
+      document.getElementById('bar-txt-custom').textContent = `${formatBDT(customRes.bill)} bill | Save ${formatBDT(customSave)} (${customSavePct}%)`;
+      document.getElementById('bar-fill-custom-bill').style.width = customBillPct + '%';
+      document.getElementById('bar-fill-custom-bill').textContent = customBillPct > 14 ? formatBDT(customRes.bill) : '';
+      document.getElementById('bar-fill-custom-save').style.width = customSavePct + '%';
+      document.getElementById('bar-fill-custom-save').textContent = customSavePct > 18 ? `Saved ${formatBDT(customSave)}` : '';
+
       // Update Energy Meters
       document.getElementById('daily-total-kwh').textContent = totalDailyKwh.toFixed(2) + ' kWh / day';
       const dayShare = totalDailyKwh > 0 ? Math.round((dayKwh / totalDailyKwh) * 100) : 50;
@@ -976,6 +1316,14 @@
 
       document.getElementById('double-batt-status').textContent = `${doubleRes.battFillPct}% Charged (${doubleRes.batteryCharged.toFixed(2)} / 8.20 kWh)`;
       document.getElementById('meter-double-batt').style.width = doubleRes.battFillPct + '%';
+
+      if (battCount === 0) {
+        document.getElementById('custom-batt-status').textContent = 'No Battery Selected';
+        document.getElementById('meter-custom-batt').style.width = '0%';
+      } else {
+        document.getElementById('custom-batt-status').textContent = `${customRes.battFillPct}% Charged (${customRes.batteryCharged.toFixed(2)} / ${customUsableBatt.toFixed(2)} kWh)`;
+        document.getElementById('meter-custom-batt').style.width = customRes.battFillPct + '%';
+      }
     }
 
     function toggleDevice(idx) {
